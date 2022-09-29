@@ -5,119 +5,57 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RuteoBusesBL;
 using RuteoBusesDAL;
 
 namespace RuteoBusesApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/ParadaRutas")]
     [ApiController]
     public class ParadaRutasController : ControllerBase
     {
-        private readonly RuteoBusesDbcontext _context;
+        private readonly ParadaRutaBL _ParadaRutaBL;
 
         public ParadaRutasController(RuteoBusesDbcontext context)
         {
-            _context = context;
+            _ParadaRutaBL = new ParadaRutaBL(context);
         }
 
         // GET: api/ParadaRutas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ParadaRuta>>> Getparadarutas()
+        public ICollection<ParadaRuta> Getparadarutas()
         {
-          if (_context.paradarutas == null)
-          {
-              return NotFound();
-          }
-            return await _context.paradarutas.ToListAsync();
+            return _ParadaRutaBL.listaParadaRuta();
         }
 
         // GET: api/ParadaRutas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ParadaRuta>> GetParadaRuta(int id)
+        public ParadaRuta? GetParadaRuta(int id)
         {
-          if (_context.paradarutas == null)
-          {
-              return NotFound();
-          }
-            var paradaRuta = await _context.paradarutas.FindAsync(id);
-
-            if (paradaRuta == null)
-            {
-                return NotFound();
-            }
-
-            return paradaRuta;
+          return _ParadaRutaBL.BuscarParadaRutaId(id);
         }
 
         // PUT: api/ParadaRutas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutParadaRuta(int id, ParadaRuta paradaRuta)
+        public bool ModificarParadaRuta(int id, ParadaRuta paradaRuta)
         {
-            if (id != paradaRuta.paradaRutaId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(paradaRuta).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ParadaRutaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return _ParadaRutaBL.ModificarParadaRuta(id, paradaRuta);
         }
 
         // POST: api/ParadaRutas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ParadaRuta>> PostParadaRuta(ParadaRuta paradaRuta)
+        public bool AgregarParadaRuta(ParadaRuta paradaRuta)
         {
-          if (_context.paradarutas == null)
-          {
-              return Problem("Entity set 'RuteoBusesDbcontext.paradarutas'  is null.");
-          }
-            _context.paradarutas.Add(paradaRuta);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetParadaRuta", new { id = paradaRuta.paradaRutaId }, paradaRuta);
+            return _ParadaRutaBL.AgregarParadaRuta(paradaRuta);
         }
 
         // DELETE: api/ParadaRutas/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteParadaRuta(int id)
+        public bool EliminarParadaRuta(int id)
         {
-            if (_context.paradarutas == null)
-            {
-                return NotFound();
-            }
-            var paradaRuta = await _context.paradarutas.FindAsync(id);
-            if (paradaRuta == null)
-            {
-                return NotFound();
-            }
-
-            _context.paradarutas.Remove(paradaRuta);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ParadaRutaExists(int id)
-        {
-            return (_context.paradarutas?.Any(e => e.paradaRutaId == id)).GetValueOrDefault();
+            return _ParadaRutaBL.EliminarBus(id);
         }
     }
 }

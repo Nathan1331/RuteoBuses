@@ -5,119 +5,59 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RuteoBusesBL;
 using RuteoBusesDAL;
 
 namespace RuteoBusesApi.Controllers
 {
-    [Route("api/Usuarios]")]
+    [Route("api/Usuarios")]
     [ApiController]
     public class UsuariosController : ControllerBase
     {
-        private readonly RuteoBusesDbcontext _context;
+        private readonly UsuarioBL _usuarioBL;
 
         public UsuariosController(RuteoBusesDbcontext context)
         {
-            _context = context;
+            _usuarioBL = new UsuarioBL(context);
         }
 
         // GET: api/Usuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> Getusuarios()
+        public ICollection<Usuario> Getusuarios()
         {
-          if (_context.usuarios == null)
-          {
-              return NotFound();
-          }
-            return await _context.usuarios.ToListAsync();
+            return _usuarioBL.listaUsuario();
         }
 
         // GET: api/Usuarios/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(int id)
+        public Usuario? GetUsuario(int id)
         {
-          if (_context.usuarios == null)
-          {
-              return NotFound();
-          }
-            var usuario = await _context.usuarios.FindAsync(id);
-
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            return usuario;
+            return _usuarioBL.BuscarUsuarioId(id);
         }
 
         // PUT: api/Usuarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
+        public bool ModificarUsuario(int id, Usuario usuario)
         {
-            if (id != usuario.userId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(usuario).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return _usuarioBL.ModificarUsuario(id, usuario);
         }
 
         // POST: api/Usuarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        public bool AgregarUsuario(Usuario usuario)
         {
-          if (_context.usuarios == null)
-          {
-              return Problem("Entity set 'RuteoBusesDbcontext.usuarios'  is null.");
-          }
-            _context.usuarios.Add(usuario);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUsuario", new { id = usuario.userId }, usuario);
+            return _usuarioBL.AgregarUsuario(usuario);
         }
 
         // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuario(int id)
+        public bool EliminarUsuario(int id)
         {
-            if (_context.usuarios == null)
-            {
-                return NotFound();
-            }
-            var usuario = await _context.usuarios.FindAsync(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-
-            _context.usuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return _usuarioBL.EliminarUsuario(id);    
         }
 
-        private bool UsuarioExists(int id)
-        {
-            return (_context.usuarios?.Any(e => e.userId == id)).GetValueOrDefault();
-        }
+
     }
 }

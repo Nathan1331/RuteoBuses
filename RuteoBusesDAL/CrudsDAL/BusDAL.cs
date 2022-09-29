@@ -52,7 +52,7 @@ namespace RuteoBusesDAL.CrudsDAL
         }
         public Bus? BuscarBusEnt(Bus bus)
         {
-            var buscar = RuteoDbcontextAccess.buses.Find(bus);
+            var buscar = RuteoDbcontextAccess.buses.Find(bus.busId);
             return buscar;
         }
 

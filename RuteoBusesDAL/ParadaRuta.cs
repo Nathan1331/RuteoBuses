@@ -13,13 +13,14 @@ namespace RuteoBusesDAL
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int paradaRutaId { get; set; }
-        public string nombreParadaRuta { get; set; }
+        public string? nombreParadaRuta { get; set; }
         //-----------------------------------------------
         public int?  rutaId { get; set; }// se define a cual ruta pertenece
+       
         [ForeignKey("rutaId")]
         public virtual Ruta? ruta { get; set; }
 
-        public int busId { get; set; }
+        public int? busId { get; set; }
 
         [ForeignKey("busId")] //Se define cual de los buses asignados a la ruta la hara
         public virtual Bus? bus { get; set; }

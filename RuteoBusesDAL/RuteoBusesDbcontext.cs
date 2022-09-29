@@ -9,15 +9,15 @@ namespace RuteoBusesDAL
 {
     public class RuteoBusesDbcontext : DbContext
     {
-        //public RuteoBusesDbcontext(DbContextOptions<RuteoBusesDbcontext> options) : base(options)
-        //{
-
-        //}
-        #region test
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public RuteoBusesDbcontext(DbContextOptions<RuteoBusesDbcontext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer("Server=.; Database=RuteoBuses; Trusted_Connection=True; ");
+
         }
+        #region test
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server=.; Database=RuteoBuses; Trusted_Connection=True; ");
+        //}
         #endregion
         public DbSet<Bus> buses { get; set; }
         public DbSet<Chofer> choferes { get; set; }

@@ -13,7 +13,7 @@ namespace RuteoBusesDAL
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int rutaId { get; set; }
-        public string nombreRuta { get; set; }
+        public string? nombreRuta { get; set; }
         public double montoEstimado { get; set; }
         public double montoRecibido { get; set; }
         public int cantidadDeParadas { get; set; }

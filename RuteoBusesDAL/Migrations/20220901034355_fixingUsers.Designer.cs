@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RuteoBusesDAL;
 
@@ -11,9 +12,10 @@ using RuteoBusesDAL;
 namespace RuteoBusesDAL.Migrations
 {
     [DbContext(typeof(RuteoBusesDbcontext))]
-    partial class RuteoBusesDbcontextModelSnapshot : ModelSnapshot
+    [Migration("20220901034355_fixingUsers")]
+    partial class fixingUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,6 +105,7 @@ namespace RuteoBusesDAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("rutaId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("paradaRutaId");
@@ -176,7 +179,7 @@ namespace RuteoBusesDAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("rolId")
+                    b.Property<int>("rolId")
                         .HasColumnType("int");
 
                     b.HasKey("userId");
@@ -215,7 +218,9 @@ namespace RuteoBusesDAL.Migrations
 
                     b.HasOne("RuteoBusesDAL.Ruta", "ruta")
                         .WithMany("paradas")
-                        .HasForeignKey("rutaId");
+                        .HasForeignKey("rutaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("bus");
 
@@ -226,7 +231,9 @@ namespace RuteoBusesDAL.Migrations
                 {
                     b.HasOne("RuteoBusesDAL.Rol", "rol")
                         .WithMany()
-                        .HasForeignKey("rolId");
+                        .HasForeignKey("rolId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("rol");
                 });

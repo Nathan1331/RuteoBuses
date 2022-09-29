@@ -16,6 +16,6 @@ namespace RuteoBusesDAL
 
         public string Description { get; set; }
 
-        public virtual ICollection<Bus> Buses { get; set; }
+        public virtual ICollection<Bus>? Buses { get; set; }
     }
 }

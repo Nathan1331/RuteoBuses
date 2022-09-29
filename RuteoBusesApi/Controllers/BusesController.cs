@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using RuteoBusesBL;
 using RuteoBusesDAL;
 
+
 namespace RuteoBusesApi.Controllers
 {
     [Route("api/Buses")]
@@ -23,10 +24,11 @@ namespace RuteoBusesApi.Controllers
         }
 
         // GET: api/Buses
+
         [HttpGet]
-        public ICollection<Bus> Getbuses()
+        public IEnumerable<Bus> Getbuses()
         {
-          if (_busBL.listaBuses == null)
+          if (_busBL.listaBuses() == null)
           {
               return null;
           }
@@ -59,7 +61,7 @@ namespace RuteoBusesApi.Controllers
 
         // DELETE: api/Buses/5
         [HttpDelete("{id}")]
-        public bool DeleteBus(int id)
+        public bool EliminarBus(int id)
         {
             return _busBL.EliminarBus(id);
         }

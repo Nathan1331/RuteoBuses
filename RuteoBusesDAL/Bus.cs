@@ -8,14 +8,14 @@ namespace RuteoBusesDAL
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int busId { get; set; }
-        public int estadoId { get; set; } // el usuario debera elegir de una lista de la tabla estados 
+        public int? estadoId { get; set; } // el usuario debera elegir de una lista de la tabla estados 
         [ForeignKey("estadoId")]
         public virtual Estado? estadoUnidad{ get; set; }
-        public int rutaId { get; set; }
+        public int? rutaId { get; set; }
 
         [ForeignKey("rutaId")]
         public virtual Ruta? ruta { get; set; } //Puede ser null se asigna a la hora de asignar ruta
-        public int choferId { get; set; }
+        public int? choferId { get; set; }
 
         [ForeignKey("choferId")] //Puede ser null se agrega a la hora de asignar ruta
         public virtual Chofer? chofer { get; set; }

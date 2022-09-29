@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RuteoBusesBL;
 using RuteoBusesDAL;
 
 namespace RuteoBusesApi.Controllers
@@ -13,37 +14,37 @@ namespace RuteoBusesApi.Controllers
     [ApiController]
     public class ChoferesController : ControllerBase
     {
-        private readonly RuteoBusesDbcontext _context;
+        private readonly ChoferBL _choferBL;
 
         public ChoferesController(RuteoBusesDbcontext context)
         {
-            _context = context;
+            _choferBL = new ChoferBL(context);
         }
 
         // GET: api/Choferes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Chofer>>> Getchoferes()
+        public ICollection<Chofer> Getchoferes()
         {
-          if (_context.choferes == null)
+          if (_choferBL.listaChoferes() == null)
           {
-              return NotFound();
+              return null;
           }
-            return await _context.choferes.ToListAsync();
+            return _choferBL.listaChoferes();
         }
 
         // GET: api/Chofers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Chofer>> GetChofer(int id)
+        public Chofer GetChofer(int id)
         {
-          if (_context.choferes == null)
+          if (_choferBL.listaChoferes == null)
           {
-              return NotFound();
+              return null;
           }
-            var chofer = await _context.choferes.FindAsync(id);
+            var chofer = _choferBL.BuscarChoferId(id);
 
             if (chofer == null)
             {
-                return NotFound();
+                return null;
             }
 
             return chofer;
@@ -52,72 +53,26 @@ namespace RuteoBusesApi.Controllers
         // PUT: api/Chofers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutChofer(int id, Chofer chofer)
+        public bool ModificarChofer(int id, Chofer chofer)
         {
-            if (id != chofer.choferId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(chofer).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ChoferExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+           return _choferBL.ModificarChofer(id,chofer);
         }
 
         // POST: api/Chofers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Chofer>> PostChofer(Chofer chofer)
+        public bool AgregarChofer(Chofer chofer)
         {
-          if (_context.choferes == null)
-          {
-              return Problem("Entity set 'RuteoBusesDbcontext.choferes'  is null.");
-          }
-            _context.choferes.Add(chofer);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetChofer", new { id = chofer.choferId }, chofer);
+            return _choferBL.AgregarChofer(chofer);
         }
 
         // DELETE: api/Chofers/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteChofer(int id)
+        public bool EliminarChofer(int id)
         {
-            if (_context.choferes == null)
-            {
-                return NotFound();
-            }
-            var chofer = await _context.choferes.FindAsync(id);
-            if (chofer == null)
-            {
-                return NotFound();
-            }
-
-            _context.choferes.Remove(chofer);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return _choferBL.EliminarChofer(id);
         }
 
-        private bool ChoferExists(int id)
-        {
-            return (_context.choferes?.Any(e => e.choferId == id)).GetValueOrDefault();
-        }
+        
     }
 }
